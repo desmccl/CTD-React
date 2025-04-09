@@ -1,6 +1,6 @@
 const TodoListItem = ({todo}) => {
     return ( 
-        <li>{todo.title}</li>
+        <li>{todo.text}</li>
     )
 }
 
