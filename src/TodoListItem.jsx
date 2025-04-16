@@ -1,6 +1,15 @@
-const TodoListItem = ({todo}) => {
+const TodoListItem = ({todo, onCompleteTodo}) => {
     return ( 
-        <li>{todo.text}</li>
+        <li>
+            
+                <input 
+                type="checkbox"
+                checked={todo.isCompleted}
+                onChange={() => onCompleteTodo(todo.id)}
+                />
+        {todo.title.text}
+        
+        </li>
     )
 }
 
