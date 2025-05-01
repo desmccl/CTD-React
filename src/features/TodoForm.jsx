@@ -11,7 +11,7 @@ function TodoForm ({onAddTodo}) {
 
     function handleAddTodo(event){
         event.preventDefault()
-        onAddTodo({ id: Date.now(), text: workingTodo });
+        onAddTodo({ id: Date.now(), title: workingTodo, isCompleted: false});
         setWorkingTodo('')
         todoTitleInput.current.focus();
     }
