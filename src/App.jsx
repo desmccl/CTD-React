@@ -3,21 +3,12 @@ import TodoList from './features/TodoList/TodoList'
 import TodoForm from './features/TodoForm'
 import { useEffect, useState } from 'react'
 import TodosViewForm from './features/TodosViewForm'
+import { useCallback } from 'react'
 
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 const token = `Bearer ${import.meta.env.VITE_PAT}`;
 
-const encodeUrl = ({sortField, sortDirection, queryString}) => {
-  let searchQuery = ""
 
-  let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
-  
-  if (queryString) {
-    searchQuery = `&filterByFormula=SEARCH("${queryString}",title)`
-  }
-
-  return encodeURI(`${url}?${sortQuery}${searchQuery}`);
-}
 
 function App() {
 
@@ -29,7 +20,15 @@ const [sortField,setSortField] = useState("createdTime")
 const [sortDirection, setSortDirection] = useState("desc")
 const [queryString, setQueryString] = useState("")
 
+const encodeUrl = useCallback(()=>{let searchQuery = ""
 
+  let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
+  
+  if (queryString) {
+    searchQuery = `&filterByFormula=SEARCH("${queryString}",title)`
+  }
+
+  return encodeURI(`${url}?${sortQuery}${searchQuery}`);},[queryString, sortDirection, sortField])
 
 
 
@@ -45,7 +44,7 @@ useEffect(() => {
     }
 
     try {
-      const resp = await fetch(encodeUrl({sortField, sortDirection, queryString}), options);
+      const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.message);
       }
@@ -68,7 +67,7 @@ useEffect(() => {
   };
 
   fetchTodos();
-}, [sortField, sortDirection, queryString]);
+}, [encodeUrl]);
 
 
 
@@ -96,7 +95,7 @@ const handleAddTodo = async (newTodo) => {
     try {
       setIsSaving(true)
 
-    const resp = await fetch(encodeUrl({sortField, sortDirection, queryString}), options);
+    const resp = await fetch(encodeUrl(), options);
     if (!resp.ok) {
       throw new Error(resp.message);
     }
@@ -150,7 +149,7 @@ const completeTodo = async (Id) => {
   };
 
   try {
-    const resp = await fetch(encodeUrl({sortField, sortDirection, queryString}), options);
+    const resp = await fetch(encodeUrl(), options);
     if (!resp.ok) {
       throw new Error(resp.message || "Failed to update todo");
     }
@@ -208,7 +207,7 @@ const updateTodo = async (editedTodo) => {
   };
 
   try {
-    const resp = await fetch(encodeUrl({sortField, sortDirection, queryString}), options);
+    const resp = await fetch(encodeUrl(), options);
     if (!resp.ok) {
       throw new Error("Failed to update todo.");
     }
