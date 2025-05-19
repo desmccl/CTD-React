@@ -13,11 +13,12 @@ const TodosViewForm = ({sortDirection, setSortDirection, sortField, setSortField
         }, 500)
         return () => clearTimeout(debounce)
     }, [localQueryString, setQueryString])
+
     return (
         <form onSubmit={preventRefresh}>
             <div>
                 <label htmlFor="queryString">Search Todos</label>
-                <input type="text" value={queryString} onChange={((e)=> {setQueryString(e.target.value)})}/>
+                <input type="text" value={localQueryString} onChange={((e)=> {setLocalQueryString(e.target.value)})}/>
                 <button type="button" onClick={() => setLocalQueryString("")}>Clear</button>
             </div>
             <div>
