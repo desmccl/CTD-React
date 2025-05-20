@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import styled from 'styled-components';
 
 function preventRefresh(event) {
     event.preventDefault()
@@ -6,6 +7,10 @@ function preventRefresh(event) {
 
 const TodosViewForm = ({sortDirection, setSortDirection, sortField, setSortField, queryString, setQueryString}) => {
     const [localQueryString, setLocalQueryString] = useState(queryString)
+
+const StyledForm = styled.form`
+  padding: 12px;
+`;
 
     useEffect(()=> {
         const debounce = setTimeout(()=>{
@@ -15,7 +20,7 @@ const TodosViewForm = ({sortDirection, setSortDirection, sortField, setSortField
     }, [localQueryString, setQueryString])
 
     return (
-        <form onSubmit={preventRefresh}>
+        <StyledForm onSubmit={preventRefresh}>
             <div>
                 <label htmlFor="queryString">Search Todos</label>
                 <input type="text" value={localQueryString} onChange={((e)=> {setLocalQueryString(e.target.value)})}/>
@@ -28,7 +33,7 @@ const TodosViewForm = ({sortDirection, setSortDirection, sortField, setSortField
                     <option value="createdTime">Time added</option>
                 </select>
             </div>
-        </form>
+        </StyledForm>
     )
 }
 
