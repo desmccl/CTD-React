@@ -1,16 +1,30 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import styled from 'styled-components';
 
 function preventRefresh(event) {
     event.preventDefault()
 }
 
 const TodosViewForm = ({sortDirection, setSortDirection, sortField, setSortField, queryString, setQueryString}) => {
+    const [localQueryString, setLocalQueryString] = useState(queryString)
+
+const StyledForm = styled.form`
+  padding: 12px;
+`;
+
+    useEffect(()=> {
+        const debounce = setTimeout(()=>{
+            setQueryString(localQueryString)
+        }, 500)
+        return () => clearTimeout(debounce)
+    }, [localQueryString, setQueryString])
+
     return (
-        <form onSubmit={preventRefresh}>
+        <StyledForm onSubmit={preventRefresh}>
             <div>
                 <label htmlFor="queryString">Search Todos</label>
-                <input type="text" value={queryString} onChange={((e)=> {setQueryString(e.target.value)})}/>
-                <button type="button" onClick={() => setQueryString("")}>Clear</button>
+                <input type="text" value={localQueryString} onChange={((e)=> {setLocalQueryString(e.target.value)})}/>
+                <button type="button" onClick={() => setLocalQueryString("")}>Clear</button>
             </div>
             <div>
                 <label htmlFor="sortField">Sort by</label>
@@ -19,7 +33,7 @@ const TodosViewForm = ({sortDirection, setSortDirection, sortField, setSortField
                     <option value="createdTime">Time added</option>
                 </select>
             </div>
-        </form>
+        </StyledForm>
     )
 }
 
