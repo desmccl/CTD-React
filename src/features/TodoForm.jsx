@@ -26,11 +26,11 @@ const StyledButton = styled.button`
     }
 
     return <div>
-        <StyledForm onSubmit={handleAddTodo}>
+        <form onSubmit={handleAddTodo}>
             <TextInputWithLabel labelText="Todo" ref={todoTitleInput} value={workingTodo}
           onChange={(e) => setWorkingTodo(e.target.value)} elementId={"todoTitle"}></TextInputWithLabel>
-            <StyledButton disabled={workingTodo===''}>Add Todo</StyledButton>
-        </StyledForm>
+            <button disabled={workingTodo===''}>Add Todo</button>
+        </form>
     </div>
 }
 
