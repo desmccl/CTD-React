@@ -1,11 +1,14 @@
 import './App.css'
-import TodoList from './features/TodoList/TodoList'
-import TodoForm from './features/TodoForm'
 import { useEffect, useState, useReducer } from 'react'
-import TodosViewForm from './features/TodosViewForm'
-import { useCallback } from 'react'
-import styles from './App.module.css'
+import TodosPage from './pages/TodosPage';
+import About from './pages/About';
+import NotFound from './pages/NotFound';
+import Header from './shared/Header';
+import { useLocation,Route,Routes } from 'react-router';
+import { useCallback } from 'react';
+import styles from './App.module.css';
 import { todosReducer as todosReducer, actions as todoActions, initialState as initialTodosState,} from './reducers/todo.reducer'
+
 
 const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 const token = `Bearer ${import.meta.env.VITE_PAT}`;
@@ -16,19 +19,42 @@ function App() {
 
 const [todoState, dispatch] = useReducer(todosReducer, initialTodosState);
 
-const [sortField,setSortField] = useState("createdTime")
-const [sortDirection, setSortDirection] = useState("desc")
-const [queryString, setQueryString] = useState("")
+const [sortField,setSortField] = useState("createdTime");
+const [sortDirection, setSortDirection] = useState("desc");
+const [queryString, setQueryString] = useState("");
 
-const encodeUrl = useCallback(()=>{let searchQuery = ""
+const location = useLocation();
+const [title, setTitle] = useState("My Todos");
+
+
+
+
+const encodeUrl = useCallback(()=>{
+  
+  let searchQuery = "";
 
   let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
   
   if (queryString) {
-    searchQuery = `&filterByFormula=SEARCH("${queryString}",title)`
+    searchQuery = `&filterByFormula=SEARCH("${queryString}",title)`;
   }
 
-  return encodeURI(`${url}?${sortQuery}${searchQuery}`);},[queryString, sortDirection, sortField])
+  return encodeURI(`${url}?${sortQuery}${searchQuery}`);
+}, [queryString, sortDirection, sortField]);
+
+useEffect(()=> {
+  switch (location.pathname) {
+    case "/":
+      setTitle("My Todos");
+      break;
+      case "/about":
+        setTitle("About");
+        break;
+        default:
+          setTitle("Not Found");
+          break;
+  }
+}, [location])
 
 
 
@@ -40,14 +66,14 @@ useEffect(() => {
       method: "GET",
       headers: {
         "Authorization": token
-      }
-    }
+      },
+    };
 
     try {
       const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.message);
-      }
+      };
 
       const data = await resp.json();
   
@@ -189,17 +215,30 @@ const updateTodo = async (editedTodo) => {
 
   return (
     <div className={styles.appContainer}>
-      <h1>My Todos</h1>
-      <TodoForm onAddTodo={handleAddTodo}/>
-      <TodoList todoList={todoState.todoList} onCompleteTodo={completeTodo} onUpdateTodo={updateTodo} isLoading={todoState.isLoading}/>
+      <Header title={title}/>
+      <Routes>
+        <Route
+        path="/"
+        element={
+          <TodosPage
+      todoState={todoState}
+      handleAddTodo={handleAddTodo}
+      completeTodo={completeTodo}
+      updateTodo={updateTodo}
+      sortDirection={sortDirection} 
+      setSortDirection={setSortDirection} 
+      sortField={sortField} 
+      setSortField={setSortField} 
+      queryString={queryString}
+      setQueryString={setQueryString}
+      dispatch={dispatch}
+      todoActions={todoActions}/>
+        }
+        />
+        <Route path="/about" element = {<About/>}/>
+        <Route path="/\*" element={<NotFound/>}/>
+      </Routes>
       
-      <TodosViewForm sortDirection={sortDirection} setSortDirection={setSortDirection} sortField={sortField} setSortField={setSortField} queryString={queryString} setQueryString={setQueryString}/>
-      {todoState.errorMessage && (
-      <div className={styles.errorMessage}>
-        <p>{todoState.errorMessage}</p>
-        <button onClick={() => dispatch({ type: todoActions.clearError })}>Dismiss</button>
-      </div>
-    )}
     </div>
   )
 }
