@@ -6,6 +6,7 @@ const Header = ({title}) => {
     return (
         <header className={styles.header}>
             <h1 className={styles.title}>{title}</h1>
+            <img src="/iconmonstr-task-list-square-filled.svg" alt="Checklist icon" />
             <nav className={styles.nav}>
                 <NavLink
                 to="/"

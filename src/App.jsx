@@ -201,7 +201,7 @@ const updateTodo = async (editedTodo) => {
     }
 
     const { records } = await resp.json();
-    dispatch({ type: todoActions.updateTodo, todo: records[0] });
+    dispatch({ type: todoActions.updateTodo, id: records[0].id, todo: records[0] });
     
   } catch (error) {
    dispatch({ type: todoActions.setLoadError, error });
