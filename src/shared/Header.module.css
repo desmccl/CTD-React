@@ -1,6 +1,19 @@
 .header {
     position: relative;
     padding: 1rem;
+    display: flex;              
+    align-items: center;        
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.header img {
+     width: 42px;
+     height: 42px;
+}
+
+.inactive:hover {
+    color: #2E8044;
 }
 
 .title {
@@ -9,15 +22,12 @@
 }
 
 .nav {
-    position: top;
-    top: 1rem;
-    right: 1rem;
     display: flex;
     gap: 1rem;
 }
 
 .active {
-    color: gray;
+    color: #2E8044;
 }
 
 .inactive {

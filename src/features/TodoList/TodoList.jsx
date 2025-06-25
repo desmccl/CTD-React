@@ -8,7 +8,7 @@ function TodoList({todoList, onCompleteTodo, onUpdateTodo, isLoading}) {
     const filteredTodoList = todoList.filter(todo => !todo.isCompleted);
     const [searchParams, setSearchParams] = useSearchParams();
     
-    const itemsPerPage = 15;
+    const itemsPerPage = 10;
     
     const currentPage = parseInt(searchParams.get('page') || '1', 10);
     const indexOfFirstTodo = (currentPage - 1) * itemsPerPage;
